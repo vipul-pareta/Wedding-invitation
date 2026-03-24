@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>RSVP Dashboard — #TheVAstory</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400&family=Cormorant+Garamond:ital,wght@0,300;0,600;1,300&family=Jost:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --gold: #C9956E;
+      --gold-dim: rgba(201,149,110,0.2);
+      --cream: #FDF8F0;
+      --dark: #1a0a00;
+      --text: #3d2b1f;
+      --text-light: #7a5c4a;
+      --border: rgba(201,149,110,0.25);
+      --green: #4caf82;
+      --red: #c0392b;
+    }
+    body {
+      font-family: 'Jost', sans-serif;
+      background: var(--cream);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 2.5rem 1.5rem 4rem;
+    }
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(ellipse 700px 400px at 10% 10%, rgba(201,149,110,0.07) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .dash-header {
+      max-width: 960px;
+      margin: 0 auto 2.5rem;
+      text-align: center;
+    }
+    .dash-label {
+      font-family: 'Cinzel Decorative', serif;
+      font-size: 0.52rem;
+      letter-spacing: 0.35em;
+      color: var(--gold);
+      text-transform: uppercase;
+      margin-bottom: 0.6rem;
+    }
+    .dash-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2.2rem;
+      font-weight: 300;
+      color: var(--text);
+      margin-bottom: 1.2rem;
+    }
+    .ornament {
+      display: flex; align-items: center; justify-content: center; gap: 0.8rem;
+    }
+    .orn-line { width: 50px; height: 1px; background: linear-gradient(90deg, transparent, var(--gold)); }
+    .orn-line.r { background: linear-gradient(90deg, var(--gold), transparent); }
+    .orn-gem { width: 6px; height: 6px; background: var(--gold); transform: rotate(45deg); opacity: 0.7; }
+
+    /* Stats row */
+    .stats-row {
+      max-width: 960px;
+      margin: 0 auto 2rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 1rem;
+    }
+    .stat-card {
+      background: rgba(255,255,255,0.65);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      padding: 1.3rem 1.2rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    }
+    .stat-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2.2rem;
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1;
+      margin-bottom: 0.3rem;
+    }
+    .stat-label {
+      font-family: 'Cinzel Decorative', serif;
+      font-size: 0.45rem;
+      letter-spacing: 0.2em;
+      color: var(--text-light);
+      text-transform: uppercase;
+    }
+
+    /* Toolbar */
+    .toolbar {
+      max-width: 960px;
+      margin: 0 auto 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      flex-wrap: wrap;
+    }
+    .toolbar-search {
+      flex: 1;
+      min-width: 180px;
+      background: rgba(255,255,255,0.7);
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      padding: 0.6rem 1rem;
+      font-family: 'Jost', sans-serif;
+      font-size: 0.82rem;
+      font-weight: 300;
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .toolbar-search:focus { border-color: var(--gold); }
+    .toolbar-search::placeholder { color: rgba(122,92,74,0.4); }
+
+    .filter-btn {
+      background: rgba(255,255,255,0.7);
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      padding: 0.6rem 1rem;
+      font-family: 'Jost', sans-serif;
+      font-size: 0.78rem;
+      font-weight: 400;
+      color: var(--text-light);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .filter-btn:hover, .filter-btn.active {
+      border-color: var(--gold);
+      color: var(--text);
+      background: rgba(201,149,110,0.08);
+    }
+    .export-btn {
+      background: transparent;
+      border: 1px solid var(--gold);
+      color: var(--text);
+      font-family: 'Cinzel Decorative', serif;
+      font-size: 0.45rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      padding: 0.6rem 1.2rem;
+      cursor: pointer;
+      transition: all 0.3s;
+      border-radius: 2px;
+    }
+    .export-btn:hover { background: var(--gold); color: #fff; }
+
+    /* Table */
+    .table-wrap {
+      max-width: 960px;
+      margin: 0 auto;
+      background: rgba(255,255,255,0.65);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    table { width: 100%; border-collapse: collapse; }
+    thead { border-bottom: 1px solid var(--border); }
+    thead th {
+      font-family: 'Cinzel Decorative', serif;
+      font-size: 0.45rem;
+      letter-spacing: 0.2em;
+      color: var(--gold);
+      text-transform: uppercase;
+      text-align: left;
+      padding: 1rem 1.1rem;
+      font-weight: 400;
+    }
+    tbody tr {
+      border-bottom: 1px solid rgba(201,149,110,0.1);
+      transition: background 0.2s;
+    }
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: rgba(201,149,110,0.04); }
+    tbody td {
+      padding: 0.85rem 1.1rem;
+      font-size: 0.83rem;
+      font-weight: 300;
+      color: var(--text);
+      vertical-align: middle;
+    }
+    .badge {
+      display: inline-block;
+      padding: 0.25rem 0.6rem;
+      border-radius: 2px;
+      font-size: 0.7rem;
+      font-weight: 400;
+      letter-spacing: 0.05em;
+    }
+    .badge-yes { background: rgba(76,175,130,0.12); color: #2e7d57; border: 1px solid rgba(76,175,130,0.3); }
+    .badge-no  { background: rgba(192,57,43,0.1);  color: #c0392b; border: 1px solid rgba(192,57,43,0.2); }
+
+    .events-pills { display: flex; gap: 0.3rem; flex-wrap: wrap; }
+    .event-pill {
+      font-size: 0.65rem;
+      padding: 0.15rem 0.5rem;
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      color: var(--text-light);
+      white-space: nowrap;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 3rem;
+      color: var(--text-light);
+    }
+    .empty-state-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.4rem;
+      font-style: italic;
+      font-weight: 300;
+      margin-bottom: 0.5rem;
+    }
+    .empty-state-sub { font-size: 0.82rem; font-weight: 300; }
+
+    .time-cell { color: var(--text-light); font-size: 0.75rem; }
+    .name-cell { font-weight: 400; }
+
+    @media (max-width: 640px) {
+      .hide-mobile { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="dash-header">
+  <div class="dash-label">#TheVAstory</div>
+  <div class="dash-title">RSVP Responses</div>
+  <div class="ornament">
+    <div class="orn-line"></div>
+    <div class="orn-gem"></div>
+    <div class="orn-line r"></div>
+  </div>
+</div>
+
+<div class="stats-row" id="statsRow">
+  <div class="stat-card">
+    <div class="stat-num" id="statTotal">0</div>
+    <div class="stat-label">Total RSVPs</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-num" id="statAccepting" style="color:#2e7d57;">0</div>
+    <div class="stat-label">Accepting</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-num" id="statDeclining" style="color:#c0392b;">0</div>
+    <div class="stat-label">Declining</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-num" id="statGuests">0</div>
+    <div class="stat-label">Total Guests</div>
+  </div>
+</div>
+
+<div class="toolbar">
+  <input class="toolbar-search" id="searchInput" type="text" placeholder="Search by name or phone…"/>
+  <button class="filter-btn active" data-filter="all">All</button>
+  <button class="filter-btn" data-filter="yes">Accepting</button>
+  <button class="filter-btn" data-filter="no">Declining</button>
+  <button class="export-btn" id="exportBtn">Export CSV</button>
+  <button class="filter-btn" id="clearBtn" style="color:#c0392b; border-color:rgba(192,57,43,0.3);">Clear Local</button>
+  <span id="syncStatus" style="font-size:0.72rem;font-weight:300;color:var(--text-light);margin-left:auto;">Loading…</span>
+</div>
+
+<div class="table-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Name</th>
+        <th class="hide-mobile">Phone</th>
+        <th>Guests</th>
+        <th>Status</th>
+        <th class="hide-mobile">Events</th>
+        <th class="hide-mobile">Time</th>
+      </tr>
+    </thead>
+    <tbody id="rsvpTable"></tbody>
+  </table>
+  <div class="empty-state" id="emptyState" style="display:none;">
+    <div class="empty-state-title">No responses yet</div>
+    <div class="empty-state-sub">RSVPs submitted from the form will appear here.</div>
+  </div>
+</div>
+
+<script>
+  // ── PASTE YOUR GOOGLE APPS SCRIPT WEB APP URL HERE ──
+  const SHEET_URL = 'https://script.google.com/macros/s/AKfycbywZh7sPCqHSBanQ94l3oHWVc6wa6AjfMVd7ZolJ8EXfelWFvVETJEECKHvxUarBnC4wA/exec';
+
+  let allData = [];
+  let activeFilter = 'all';
+
+  function setStatus(msg, isError) {
+    let el = document.getElementById('syncStatus');
+    if (!el) return;
+    el.textContent = msg;
+    el.style.color = isError ? '#c0392b' : 'var(--text-light)';
+  }
+
+  async function loadData() {
+    setStatus('Syncing…');
+    try {
+      const res = await fetch(SHEET_URL);
+      const raw = await res.json();
+
+      // Map sheet rows (objects with header keys) to our format
+      allData = raw.map(r => ({
+        name:       r['Name']         || r.name        || '',
+        phone:      r['Phone']        || r.phone       || '',
+        guests:     r['Guests']       || r.guests      || '1',
+        attendance: r['Attendance']   || r.attendance  || 'yes',
+        events:    (r['Events']       || r.events      || '').split(', ').filter(Boolean),
+        message:    r['Message']      || r.message     || '',
+        submittedAt:r['Submitted At'] || r.submittedAt || ''
+      }));
+
+      setStatus('Last synced: ' + new Date().toLocaleTimeString('en-IN'));
+    } catch(e) {
+      // Fallback to localStorage
+      allData = JSON.parse(localStorage.getItem('rsvpResponses') || '[]');
+      setStatus('Live sync unavailable — showing local data', true);
+    }
+    render();
+  }
+
+  function render() {
+    const search = document.getElementById('searchInput').value.toLowerCase();
+    const filtered = allData.filter(r => {
+      const matchFilter = activeFilter === 'all' || r.attendance === activeFilter;
+      const matchSearch = !search || r.name.toLowerCase().includes(search) || (r.phone && r.phone.includes(search));
+      return matchFilter && matchSearch;
+    });
+
+    const accepting   = allData.filter(r => r.attendance === 'yes');
+    const totalGuests = accepting.reduce((s, r) => s + (r.guests === '5+' ? 5 : parseInt(r.guests) || 1), 0);
+    document.getElementById('statTotal').textContent     = allData.length;
+    document.getElementById('statAccepting').textContent = accepting.length;
+    document.getElementById('statDeclining').textContent = allData.filter(r => r.attendance === 'no').length;
+    document.getElementById('statGuests').textContent    = totalGuests;
+
+    const tbody = document.getElementById('rsvpTable');
+    const empty = document.getElementById('emptyState');
+
+    if (filtered.length === 0) {
+      tbody.innerHTML = '';
+      empty.style.display = 'block';
+      return;
+    }
+    empty.style.display = 'none';
+    tbody.innerHTML = filtered.map((r, i) => {
+      const events = (r.events || []).map(e => `<span class="event-pill">${capitalize(e)}</span>`).join('');
+      return `<tr>
+        <td style="color:var(--text-light);font-size:0.75rem;">${i+1}</td>
+        <td class="name-cell">${esc(r.name)}</td>
+        <td class="hide-mobile">${esc(r.phone || '—')}</td>
+        <td>${esc(r.guests || '1')}</td>
+        <td><span class="badge badge-${r.attendance}">${r.attendance === 'yes' ? 'Accepting' : 'Declining'}</span></td>
+        <td class="hide-mobile"><div class="events-pills">${events || '—'}</div></td>
+        <td class="time-cell hide-mobile">${esc(r.submittedAt)}</td>
+      </tr>`;
+    }).join('');
+  }
+
+  function capitalize(s) { return s ? s.charAt(0).toUpperCase() + s.slice(1) : ''; }
+  function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+  document.getElementById('searchInput').addEventListener('input', render);
+
+  document.querySelectorAll('.filter-btn[data-filter]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      activeFilter = btn.dataset.filter;
+      document.querySelectorAll('.filter-btn[data-filter]').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      render();
+    });
+  });
+
+  document.getElementById('exportBtn').addEventListener('click', () => {
+    if (!allData.length) return;
+    const headers = ['Name','Phone','Guests','Attendance','Events','Message','Submitted'];
+    const rows = allData.map(r => [
+      r.name, r.phone, r.guests, r.attendance,
+      (r.events||[]).join(' | '),
+      (r.message||'').replace(/,/g,' '),
+      r.submittedAt
+    ]);
+    const csv = [headers, ...rows].map(r => r.map(c => `"${c}"`).join(',')).join('\n');
+    const a = document.createElement('a');
+    a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
+    a.download = 'TheVAstory_RSVPs.csv';
+    a.click();
+  });
+
+  document.getElementById('clearBtn').addEventListener('click', () => {
+    if (confirm('This only clears your local backup. Delete rows from Google Sheets directly to remove live data.')) {
+      localStorage.removeItem('rsvpResponses');
+      loadData();
+    }
+  });
+
+  loadData();
+  setInterval(loadData, 30000); // refresh every 30s
+</script>
+</body>
+</html>

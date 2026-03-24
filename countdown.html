@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Wedding Countdown</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,400&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #1a0a0f;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .wd-section {
+      font-family: 'Montserrat', sans-serif;
+      text-align: center;
+      padding: 70px 30px 64px;
+      background: linear-gradient(160deg, #1a0a0f 0%, #2c1018 50%, #1a0a0f 100%);
+      position: relative;
+      overflow: hidden;
+      width: 100%;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* radial glow */
+    .wd-section::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(201,90,90,0.13) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    /* floating petals */
+    .wd-rose {
+      position: absolute;
+      font-size: 13px;
+      opacity: 0.12;
+      pointer-events: none;
+      animation: floatPetal linear infinite;
+    }
+
+    @keyframes floatPetal {
+      0%   { transform: translateY(100vh) rotate(0deg);   opacity: 0.12; }
+      100% { transform: translateY(-20px) rotate(720deg); opacity: 0; }
+    }
+
+    /* ── EYEBROW ── */
+    .wd-eyebrow {
+      font-size: 10px;
+      letter-spacing: 6px;
+      text-transform: uppercase;
+      color: #c9784c;
+      margin-bottom: 14px;
+      opacity: 0.9;
+      position: relative;
+    }
+
+    /* ── HEADING ── */
+    .wd-heading {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 300;
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      color: #f5e6d8;
+      line-height: 1.1;
+      margin-bottom: 6px;
+      position: relative;
+    }
+    .wd-heading em {
+      font-style: italic;
+      color: #e8b89a;
+    }
+
+    /* ── DIVIDER ── */
+    .wd-divider {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      width: 100%;
+      max-width: 320px;
+      margin: 24px auto 40px;
+    }
+    .wd-line {
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(201,120,76,0.4), transparent);
+    }
+    .wd-diamond {
+      width: 6px;
+      height: 6px;
+      background: #c9784c;
+      transform: rotate(45deg);
+      flex-shrink: 0;
+    }
+
+    /* ── COUNTDOWN GRID ── */
+    .wd-grid {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 44px;
+      position: relative;
+    }
+
+    .wd-box {
+      position: relative;
+      min-width: 110px;
+      padding: 28px 20px 20px;
+      border: 1px solid rgba(201,120,76,0.25);
+      border-radius: 4px;
+      background: rgba(255,255,255,0.04);
+      backdrop-filter: blur(4px);
+    }
+
+    /* top accent line */
+    .wd-box::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 50%;
+      transform: translateX(-50%);
+      width: 40px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, #c9784c, transparent);
+    }
+
+    .wd-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 300;
+      font-size: clamp(2.6rem, 6vw, 3.8rem);
+      color: #f5e6d8;
+      line-height: 1;
+      display: block;
+      min-height: 1.2em;
+      transition: transform 0.28s cubic-bezier(0.4,0,0.2,1), opacity 0.28s ease;
+    }
+    .wd-num.flip {
+      transform: translateY(-10px);
+      opacity: 0;
+    }
+
+    .wd-label {
+      font-size: 9px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: rgba(201,120,76,0.75);
+      margin-top: 10px;
+      display: block;
+    }
+
+    /* ── DATE BADGE ── */
+    .wd-date-badge {
+      display: inline-block;
+      border: 1px solid rgba(201,120,76,0.4);
+      border-radius: 30px;
+      padding: 10px 28px;
+      font-size: 11px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: #e8b89a;
+      margin-bottom: 10px;
+      position: relative;
+    }
+
+    /* ── MESSAGE ── */
+    .wd-msg {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: clamp(1rem, 2.5vw, 1.25rem);
+      color: rgba(245,230,216,0.5);
+      margin-top: 4px;
+      position: relative;
+      transition: opacity 0.5s ease;
+    }
+
+    /* ── HEARTS ── */
+    .wd-hearts {
+      font-size: 14px;
+      letter-spacing: 6px;
+      color: #c9784c;
+      opacity: 0.55;
+      margin-top: 22px;
+      position: relative;
+    }
+
+    /* ── NAMES (optional, edit below) ── */
+    .wd-names {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 300;
+      font-size: clamp(1.1rem, 3vw, 1.5rem);
+      color: rgba(245,230,216,0.65);
+      letter-spacing: 2px;
+      margin-bottom: 30px;
+      position: relative;
+    }
+    .wd-names span {
+      color: #e8b89a;
+      font-style: italic;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 520px) {
+      .wd-grid  { gap: 10px; }
+      .wd-box   { min-width: 72px; padding: 18px 12px 14px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="wd-section" id="wdSection">
+
+  <p class="wd-eyebrow">Save the Date</p>
+
+  <h2 class="wd-heading">Together <em>Forever</em> Begins</h2>
+
+  <!-- ✏️ Replace with real names or delete this line -->
+  <p class="wd-names"><span>Vipul</span> &amp; <span>Ambika</span></p>
+
+  <div class="wd-divider">
+    <div class="wd-line"></div>
+    <div class="wd-diamond"></div>
+    <div class="wd-line"></div>
+  </div>
+
+  <!-- Countdown boxes -->
+  <div class="wd-grid">
+    <div class="wd-box">
+      <span class="wd-num" id="wdDays">00</span>
+      <span class="wd-label">Days</span>
+    </div>
+    <div class="wd-box">
+      <span class="wd-num" id="wdHours">00</span>
+      <span class="wd-label">Hours</span>
+    </div>
+    <div class="wd-box">
+      <span class="wd-num" id="wdMins">00</span>
+      <span class="wd-label">Minutes</span>
+    </div>
+    <div class="wd-box">
+      <span class="wd-num" id="wdSecs">00</span>
+      <span class="wd-label">Seconds</span>
+    </div>
+  </div>
+
+  <div class="wd-date-badge">19 April · 2026</div>
+
+  <p class="wd-msg" id="wdMsg">Until our forever begins</p>
+
+  <div class="wd-hearts">♥ &nbsp; ♥ &nbsp; ♥</div>
+
+</div><!-- /wd-section -->
+
+
+<script>
+  /* ═══════════════════════════════
+     CONFIGURATION
+     Change the date below if needed
+  ═══════════════════════════════ */
+  const WEDDING_DATE = new Date('2026-04-19T00:00:00').getTime();
+
+  /* ═══════════════════════════════
+     ELEMENTS
+  ═══════════════════════════════ */
+  const elDays  = document.getElementById('wdDays');
+  const elHours = document.getElementById('wdHours');
+  const elMins  = document.getElementById('wdMins');
+  const elSecs  = document.getElementById('wdSecs');
+  const elMsg   = document.getElementById('wdMsg');
+
+  /* ═══════════════════════════════
+     HELPERS
+  ═══════════════════════════════ */
+  function pad(n) { return String(n).padStart(2, '0'); }
+
+  // Flip animation: slide old number out, new number in
+  function animFlip(el, newVal) {
+    if (el.dataset.v === newVal) return; // no change, skip
+    el.dataset.v = newVal;
+    el.classList.add('flip');
+    setTimeout(() => {
+      el.textContent = newVal;
+      el.classList.remove('flip');
+    }, 280);
+  }
+
+  /* ═══════════════════════════════
+     COUNTDOWN TICK
+  ═══════════════════════════════ */
+  function tick() {
+    const diff = WEDDING_DATE - Date.now();
+
+    if (diff <= 0) {
+      // Wedding day has arrived!
+      ['wdDays','wdHours','wdMins','wdSecs'].forEach(id => {
+        document.getElementById(id).textContent = '00';
+      });
+      elMsg.textContent = 'Today is the big day! 🎊';
+      return;
+    }
+
+    const d = Math.floor(diff / 86400000);
+    const h = Math.floor((diff % 86400000) / 3600000);
+    const m = Math.floor((diff % 3600000)  / 60000);
+    const s = Math.floor((diff % 60000)    / 1000);
+
+    animFlip(elDays,  pad(d));
+    animFlip(elHours, pad(h));
+    animFlip(elMins,  pad(m));
+    animFlip(elSecs,  pad(s));
+
+    // Dynamic message based on days remaining
+    if      (d > 60) elMsg.textContent = 'Until our forever begins';
+    else if (d > 30) elMsg.textContent = 'The big day is getting closer…';
+    else if (d > 14) elMsg.textContent = 'Days full of love await';
+    else if (d > 7)  elMsg.textContent = 'Almost time to celebrate!';
+    else if (d > 1)  elMsg.textContent = 'Just a few more days…';
+    else if (d === 1) elMsg.textContent = 'Tomorrow is the day!';
+    else             elMsg.textContent = 'Today we say "I do" ♥';
+  }
+
+  /* ═══════════════════════════════
+     FLOATING PETALS
+  ═══════════════════════════════ */
+  const PETAL_CHARS = ['❀', '✿', '❁', '✾', '❃'];
+  const section = document.getElementById('wdSection');
+
+  function spawnPetal() {
+    const p = document.createElement('span');
+    p.className = 'wd-rose';
+    p.textContent = PETAL_CHARS[Math.floor(Math.random() * PETAL_CHARS.length)];
+    p.style.left          = Math.random() * 100 + '%';
+    p.style.bottom        = '-20px';
+    p.style.fontSize      = (10 + Math.random() * 14) + 'px';
+    p.style.animationDuration = (7 + Math.random() * 8) + 's';
+    p.style.animationDelay    = (Math.random() * 2) + 's';
+    section.appendChild(p);
+    // Remove after animation completes
+    setTimeout(() => p.remove(), 16000);
+  }
+
+  /* ═══════════════════════════════
+     START
+  ═══════════════════════════════ */
+  tick();
+  setInterval(tick, 1000);
+
+  // Spawn petals periodically
+  for (let i = 0; i < 8; i++) setTimeout(spawnPetal, i * 350);
+  setInterval(spawnPetal, 1400);
+</script>
+
+</body>
+</html>

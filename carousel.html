@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Image Carousel</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ── RESET & BASE ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #0a0a0a;
+      --surface:   #111;
+      --gold:      #c9a84c;
+      --gold-pale: #e8d5a3;
+      --white:     #f5f0e8;
+      --gray:      #555;
+      --radius:    4px;
+      --transition: 0.72s cubic-bezier(0.77, 0, 0.175, 1);
+    }
+
+    html, body {
+      height: 100%;
+      background: var(--bg);
+      color: var(--white);
+      font-family: 'Montserrat', sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* ── PAGE LAYOUT ── */
+    .page {
+      /* min-height: 100vh; */
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px 60px;
+      position: relative;
+    }
+
+    /* subtle grain overlay */
+    .page::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 100;
+    }
+
+    /* ── HEADER ── */
+    .header {
+      text-align: center;
+      margin-bottom: 48px;
+      animation: fadeDown 0.9s ease both;
+    }
+    .header-eyebrow {
+      font-size: 10px;
+      letter-spacing: 6px;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 12px;
+    }
+    .header h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 300;
+      font-size: clamp(2.2rem, 5vw, 3.6rem);
+      color: var(--white);
+      line-height: 1.1;
+    }
+    .header h1 em {
+      font-style: italic;
+      color: var(--gold-pale);
+    }
+
+    /* ── CAROUSEL WRAPPER ── */
+    .carousel-wrap {
+      position: relative;
+      width: 100%;
+      max-width: 960px;
+      animation: fadeUp 1s 0.2s ease both;
+    }
+
+    /* decorative corner lines */
+    .carousel-wrap::before,
+    .carousel-wrap::after {
+      content: '';
+      position: absolute;
+      width: 60px; height: 60px;
+      border-color: var(--gold);
+      border-style: solid;
+      z-index: 10;
+      opacity: 0.6;
+    }
+    .carousel-wrap::before { top: -10px; left: -10px; border-width: 1px 0 0 1px; }
+    .carousel-wrap::after  { bottom: -10px; right: -10px; border-width: 0 1px 1px 0; }
+
+    /* ── CAROUSEL TRACK ── */
+    .carousel {
+      position: relative;
+      overflow: hidden;
+      border-radius: var(--radius);
+      background: var(--surface);
+      aspect-ratio: 16 / 9;
+      box-shadow: 0 30px 80px rgba(0,0,0,0.7), 0 0 0 1px rgba(201,168,76,0.15);
+    }
+
+    .slide {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      transform: scale(1.06) translateX(30px);
+      transition: opacity var(--transition), transform var(--transition);
+      pointer-events: none;
+    }
+    .slide.active {
+      opacity: 1;
+      transform: scale(1) translateX(0);
+      pointer-events: auto;
+      z-index: 2;
+    }
+    .slide.prev {
+      opacity: 0;
+      transform: scale(0.96) translateX(-30px);
+      z-index: 1;
+    }
+
+    .slide img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      display: block;
+      filter: brightness(0.88);
+      transition: filter 0.5s ease;
+    }
+    .slide.active img { filter: brightness(0.95); }
+
+    /* ── SLIDE CAPTION ── */
+    .caption {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      padding: 40px 36px 28px;
+      background: linear-gradient(transparent, rgba(0,0,0,0.72));
+      transform: translateY(8px);
+      opacity: 0;
+      transition: opacity 0.5s 0.3s ease, transform 0.5s 0.3s ease;
+      z-index: 3;
+    }
+    .slide.active .caption {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .caption-label {
+      font-size: 9px;
+      letter-spacing: 5px;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 6px;
+    }
+    .caption-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 300;
+      font-size: clamp(1.2rem, 2.5vw, 1.8rem);
+      color: var(--white);
+    }
+
+    /* ── PROGRESS BAR ── */
+    .progress-bar {
+      position: absolute;
+      top: 0; left: 0;
+      height: 2px;
+      background: var(--gold);
+      z-index: 10;
+      width: 0%;
+      transition: width linear;
+    }
+
+    /* ── PREV / NEXT BUTTONS ── */
+    .btn-prev, .btn-next {
+      position: absolute;
+      top: 50%; transform: translateY(-50%);
+      z-index: 20;
+      background: rgba(10,10,10,0.55);
+      border: 1px solid rgba(201,168,76,0.3);
+      color: var(--gold-pale);
+      width: 48px; height: 48px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.25s, border-color 0.25s, transform 0.25s;
+      backdrop-filter: blur(6px);
+    }
+    .btn-prev { left: -24px; }
+    .btn-next { right: -24px; }
+    .btn-prev:hover, .btn-next:hover {
+      background: var(--gold);
+      border-color: var(--gold);
+      color: #0a0a0a;
+      transform: translateY(-50%) scale(1.1);
+    }
+    .btn-prev svg, .btn-next svg { width: 18px; height: 18px; }
+
+    /* ── COUNTER ── */
+    .counter {
+      position: absolute;
+      top: 18px; right: 22px;
+      z-index: 10;
+      font-size: 10px;
+      letter-spacing: 3px;
+      color: rgba(255,255,255,0.55);
+    }
+    .counter span { color: var(--gold); font-weight: 600; }
+
+    /* ── DOTS ── */
+    .dots {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      margin-top: 28px;
+    }
+    .dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--gray);
+      cursor: pointer;
+      transition: background 0.3s, transform 0.3s, width 0.4s;
+      border: none;
+    }
+    .dot.active {
+      background: var(--gold);
+      width: 24px;
+      border-radius: 3px;
+      transform: none;
+    }
+    .dot:hover:not(.active) {
+      background: var(--gold-pale);
+      transform: scale(1.3);
+    }
+
+    /* ── THUMBNAILS ── */
+    .thumbnails {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+    .thumb {
+      width: 72px; height: 46px;
+      border-radius: 2px;
+      overflow: hidden;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: border-color 0.3s, opacity 0.3s, transform 0.3s;
+      opacity: 0.5;
+    }
+    .thumb img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .thumb.active {
+      border-color: var(--gold);
+      opacity: 1;
+      transform: translateY(-3px);
+    }
+    .thumb:hover:not(.active) { opacity: 0.85; }
+
+    /* ── AUTOPLAY TOGGLE ── */
+    .controls-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      margin-top: 24px;
+    }
+    .autoplay-btn {
+      background: transparent;
+      border: 1px solid rgba(201,168,76,0.35);
+      color: var(--gold-pale);
+      font-family: 'Montserrat', sans-serif;
+      font-size: 9px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      padding: 8px 20px;
+      border-radius: 40px;
+      cursor: pointer;
+      transition: background 0.25s, color 0.25s;
+    }
+    .autoplay-btn:hover,
+    .autoplay-btn.playing {
+      background: var(--gold);
+      color: #0a0a0a;
+      border-color: var(--gold);
+    }
+
+    /* ── KEYBOARD HINT ── */
+    .hint {
+      margin-top: 18px;
+      font-size: 9px;
+      letter-spacing: 2px;
+      color: var(--gray);
+      text-transform: uppercase;
+    }
+
+    /* ── KEYFRAMES ── */
+    @keyframes fadeDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 640px) {
+      .btn-prev { left: 10px; }
+      .btn-next { right: 10px; }
+      .thumb { width: 52px; height: 34px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="page">
+
+  <header class="header">
+    <p class="header-eyebrow">Our Gallery</p>
+    <h1>Moments Worth <em>Remembering</em></h1>
+  </header>
+
+  <div class="carousel-wrap">
+
+    <!-- Prev/Next -->
+    <button class="btn-prev" id="prevBtn" aria-label="Previous slide">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="15 18 9 12 15 6"/></svg>
+    </button>
+    <button class="btn-next" id="nextBtn" aria-label="Next slide">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="9 6 15 12 9 18"/></svg>
+    </button>
+
+    <!-- Main Carousel -->
+    <div class="carousel" id="carousel">
+      <div class="progress-bar" id="progressBar"></div>
+      <div class="counter"><span id="currentNum">1</span> / <span id="totalNum">5</span></div>
+
+      <!-- ═══════════════════════════════════════════════
+           SLIDES — edit src="" to point to your images
+           Place your images in a folder (e.g. "images/")
+           and update the paths like: src="images/photo1.jpg"
+      ═══════════════════════════════════════════════ -->
+
+      <div class="slide active" data-label="01 — Landscape" data-title="Golden Hour Vista">
+        <img src="images/slide1.jpg" alt="Slide 1" />
+        <div class="caption">
+          <p class="caption-label">01 — Kota Diaries</p>
+          <p class="caption-title">It Started With a Walk in Rampura</p>
+        </div>
+      </div>
+
+      <div class="slide" data-label="02 — Architecture" data-title="Geometric Symmetry">
+        <img src="images/slide2.jpg" alt="Slide 2" />
+        <div class="caption">
+          <p class="caption-label">02 — Kota Diaries</p>
+          <p class="caption-title">Balance on Wheels, Chaos in Hearts</p>
+        </div>
+      </div>
+
+      <div class="slide" data-label="03 — Nature" data-title="Into the Forest">
+        <img src="images/slide3.jpg" alt="Slide 3" />
+        <div class="caption">
+          <p class="caption-label">03 — Kota Diaries</p>
+          <p class="caption-title">One Chai, Two Hearts, Unlimited Talks</p>
+        </div>
+      </div>
+
+      <div class="slide" data-label="04 — Portrait" data-title="Light & Shadow">
+        <img src="images/slide4.jpg" alt="Slide 4" />
+        <div class="caption">
+          <p class="caption-label">04 — Kota Diaries</p>
+          <p class="caption-title">Cheers to Us (With Cutting Chai ☕)</p>
+        </div>
+      </div>
+
+      <div class="slide" data-label="05 — Urban" data-title="City After Rain">
+        <img src="images/slide5.jpg" alt="Slide 5" />
+        <div class="caption">
+          <p class="caption-label">05 — Kota Diaries</p>
+          <p class="caption-title">From Rampura Streets to Forever Routes</p>
+        </div>
+      </div>
+
+    </div><!-- /carousel -->
+
+    <!-- Dots -->
+    <div class="dots" id="dots"></div>
+
+  </div><!-- /carousel-wrap -->
+
+  <!-- Thumbnails -->
+  <div class="thumbnails" id="thumbs"></div>
+
+  <!-- Controls -->
+  <div class="controls-row">
+    <button class="autoplay-btn playing" id="autoplayBtn">⏸ Pause</button>
+  </div>
+
+  <p class="hint">← → arrow keys to navigate &nbsp;·&nbsp; space to pause</p>
+
+</div><!-- /page -->
+
+
+<script>
+  /* ─────────────────────────────────────────────
+     CONFIGURATION — tweak to your liking
+  ───────────────────────────────────────────── */
+  const AUTOPLAY_INTERVAL = 5000; // ms between slides
+  const TRANSITION_MS     = 720;  // must match CSS --transition duration (ms)
+
+  /* ─────────────────────────────────────────────
+     STATE
+  ───────────────────────────────────────────── */
+  const slides     = Array.from(document.querySelectorAll('.slide'));
+  const total      = slides.length;
+  let current      = 0;
+  let autoplay     = true;
+  let timer        = null;
+  let progTimer    = null;
+  let busy         = false;
+
+  const dotsEl      = document.getElementById('dots');
+  const thumbsEl    = document.getElementById('thumbs');
+  const progressBar = document.getElementById('progressBar');
+  const currentNum  = document.getElementById('currentNum');
+  const totalNum    = document.getElementById('totalNum');
+  const autoBtn     = document.getElementById('autoplayBtn');
+
+  totalNum.textContent = total;
+
+  /* ─────────────────────────────────────────────
+     BUILD DOTS & THUMBNAILS DYNAMICALLY
+  ───────────────────────────────────────────── */
+  slides.forEach((slide, i) => {
+    // dot
+    const dot = document.createElement('button');
+    dot.className = 'dot' + (i === 0 ? ' active' : '');
+    dot.setAttribute('aria-label', 'Go to slide ' + (i + 1));
+    dot.addEventListener('click', () => goTo(i));
+    dotsEl.appendChild(dot);
+
+    // thumbnail — clones the image src
+    const imgSrc = slide.querySelector('img').src;
+    const thumb = document.createElement('div');
+    thumb.className = 'thumb' + (i === 0 ? ' active' : '');
+    thumb.innerHTML = `<img src="${imgSrc}" alt="Thumbnail ${i+1}" loading="lazy"/>`;
+    thumb.addEventListener('click', () => goTo(i));
+    thumbsEl.appendChild(thumb);
+  });
+
+  const dots   = Array.from(dotsEl.querySelectorAll('.dot'));
+  const thumbs = Array.from(thumbsEl.querySelectorAll('.thumb'));
+
+  /* ─────────────────────────────────────────────
+     GOTO SLIDE
+  ───────────────────────────────────────────── */
+  function goTo(index, direction = 'next') {
+    if (busy || index === current) return;
+    busy = true;
+
+    const prev = current;
+    current = (index + total) % total;
+
+    // mark old slide as prev (exit animation)
+    slides[prev].classList.remove('active');
+    slides[prev].classList.add('prev');
+
+    // new slide enters
+    slides[current].classList.add('active');
+
+    // update indicators
+    dots.forEach((d, i) => d.classList.toggle('active', i === current));
+    thumbs.forEach((t, i) => t.classList.toggle('active', i === current));
+    currentNum.textContent = current + 1;
+
+    // clean up prev class after transition
+    setTimeout(() => {
+      slides[prev].classList.remove('prev');
+      busy = false;
+    }, TRANSITION_MS);
+
+    resetProgress();
+  }
+
+  function next() { goTo(current + 1, 'next'); }
+  function prev() { goTo(current - 1, 'prev'); }
+
+  /* ─────────────────────────────────────────────
+     PROGRESS BAR
+  ───────────────────────────────────────────── */
+  function resetProgress() {
+    clearInterval(progTimer);
+    progressBar.style.transition = 'none';
+    progressBar.style.width = '0%';
+
+    if (!autoplay) return;
+
+    // tiny delay so the reset is visible
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        progressBar.style.transition = `width ${AUTOPLAY_INTERVAL}ms linear`;
+        progressBar.style.width = '100%';
+      });
+    });
+  }
+
+  /* ─────────────────────────────────────────────
+     AUTOPLAY
+  ───────────────────────────────────────────── */
+  function startAutoplay() {
+    clearInterval(timer);
+    timer = setInterval(next, AUTOPLAY_INTERVAL);
+    resetProgress();
+  }
+
+  function stopAutoplay() {
+    clearInterval(timer);
+    progressBar.style.transition = 'none';
+    progressBar.style.width = '0%';
+  }
+
+  function toggleAutoplay() {
+    autoplay = !autoplay;
+    if (autoplay) {
+      startAutoplay();
+      autoBtn.textContent = '⏸ Pause';
+      autoBtn.classList.add('playing');
+    } else {
+      stopAutoplay();
+      autoBtn.textContent = '▶ Play';
+      autoBtn.classList.remove('playing');
+    }
+  }
+
+  autoBtn.addEventListener('click', toggleAutoplay);
+  startAutoplay();
+
+  /* ─────────────────────────────────────────────
+     PREV / NEXT BUTTONS
+  ───────────────────────────────────────────── */
+  document.getElementById('prevBtn').addEventListener('click', () => {
+    prev();
+    if (autoplay) startAutoplay();
+  });
+  document.getElementById('nextBtn').addEventListener('click', () => {
+    next();
+    if (autoplay) startAutoplay();
+  });
+
+  /* ─────────────────────────────────────────────
+     KEYBOARD NAVIGATION
+  ───────────────────────────────────────────── */
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight') { next(); if (autoplay) startAutoplay(); }
+    if (e.key === 'ArrowLeft')  { prev(); if (autoplay) startAutoplay(); }
+    if (e.key === ' ')          { e.preventDefault(); toggleAutoplay(); }
+  });
+
+  /* ─────────────────────────────────────────────
+     TOUCH / SWIPE SUPPORT
+  ───────────────────────────────────────────── */
+  let touchStartX = 0;
+  const carousel = document.getElementById('carousel');
+
+  carousel.addEventListener('touchstart', e => {
+    touchStartX = e.changedTouches[0].clientX;
+  }, { passive: true });
+
+  carousel.addEventListener('touchend', e => {
+    const diff = touchStartX - e.changedTouches[0].clientX;
+    if (Math.abs(diff) > 50) {
+      diff > 0 ? next() : prev();
+      if (autoplay) startAutoplay();
+    }
+  }, { passive: true });
+
+  /* ─────────────────────────────────────────────
+     PAUSE ON HOVER
+  ───────────────────────────────────────────── */
+  carousel.addEventListener('mouseenter', () => { if (autoplay) stopAutoplay(); });
+  carousel.addEventListener('mouseleave', () => { if (autoplay) startAutoplay(); });
+</script>
+
+</body>
+</html>
