@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Highlights — #TheVAstory</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet"/>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --gold: #C9956E;
+      --gold-light: #F5D78E;
+      --gold-dim: rgba(201,149,110,0.2);
+      --cream: #FDF8F0;
+      --dark: #120600;
+      --text: #3d2b1f;
+      --text-light: #7a5c4a;
+      --border: rgba(201,149,110,0.25);
+    }
+
+    body {
+      font-family: 'Jost', sans-serif;
+      background: var(--dark);
+      overflow-x: hidden;
+    }
+
+    .hl-back-btn {
+  position: fixed;
+  top: 1.5rem;
+  left: 1.5rem;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: 'Jost', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 300;
+  letter-spacing: 0.12em;
+  color: rgba(200,184,154,0.6);
+  text-decoration: none;
+  border: 1px solid rgba(201,149,110,0.2);
+  padding: 0.5rem 1rem;
+  border-radius: 2px;
+  background: rgba(18,6,0,0.7);
+  backdrop-filter: blur(8px);
+  transition: all 0.3s ease;
+}
+
+.hl-back-btn:hover {
+  color: #C9956E;
+  border-color: rgba(201,149,110,0.5);
+  background: rgba(201,149,110,0.08);
+}
+
+    /* ═══════════════════════════════════════
+       HIGHLIGHTS SECTION
+    ═══════════════════════════════════════ */
+    #highlights {
+      background: linear-gradient(170deg, #120600 0%, #1e0c00 50%, #0d0400 100%);
+      padding: 5rem 1.5rem 6rem;
+      position: relative;
+      overflow: hidden;
+      min-height: 100vh;
+    }
+
+    /* Background glow */
+    #highlights::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 600px 400px at 20% 30%, rgba(201,149,110,0.07) 0%, transparent 70%),
+        radial-gradient(ellipse 500px 300px at 80% 70%, rgba(180,100,20,0.06) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    /* Particles */
+    .hl-particles { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+    .hl-particle {
+      position: absolute;
+      width: 2px; height: 2px;
+      background: var(--gold-light);
+      border-radius: 50%;
+      opacity: 0;
+      animation: hlParticleDrift linear infinite;
+    }
+    @keyframes hlParticleDrift {
+      0%   { opacity: 0; transform: translateY(0) scale(0); }
+      15%  { opacity: 0.5; transform: translateY(-20px) scale(1); }
+      85%  { opacity: 0.2; }
+      100% { opacity: 0; transform: translateY(-100px) scale(0.3); }
+    }
+
+    .hl-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 2;
+    }
+
+    /* ── Header ── */
+    .hl-header {
+      text-align: center;
+      margin-bottom: 3.5rem;
+    }
+
+    .hl-label {
+      font-family: 'Cinzel Decorative', serif;
+      font-size: 0.52rem;
+      letter-spacing: 0.38em;
+      color: var(--gold);
+      text-transform: uppercase;
+      margin-bottom: 0.9rem;
+      opacity: 0;
+      animation: hlFadeUp 0.7s ease forwards 0.1s;
+    }
+
+    .hl-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      font-weight: 300;
+      color: #f5e6c8;
+      line-height: 1.1;
+      margin-bottom: 1.3rem;
+      opacity: 0;
+      animation: hlFadeUp 0.8s ease forwards 0.25s;
+    }
+
+    .hl-ornament {
+      display: flex; align-items: center; justify-content: center; gap: 1rem;
+      margin-bottom: 1.2rem;
+      opacity: 0;
+      animation: hlFadeUp 0.7s ease forwards 0.4s;
+    }
+    .hl-orn-line { width: 70px; height: 1px; background: linear-gradient(90deg, transparent, var(--gold)); }
+    .hl-orn-line.r { background: linear-gradient(90deg, var(--gold), transparent); }
+    .hl-orn-gem { width: 7px; height: 7px; background: var(--gold); transform: rotate(45deg); opacity: 0.8; }
+
+    .hl-subtitle {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1rem;
+      font-style: italic;
+      font-weight: 300;
+      color: rgba(200,184,154,0.6);
+      opacity: 0;
+      animation: hlFadeUp 0.7s ease forwards 0.55s;
+    }
+
+    /* ── Tabs ── */
+    .hl-tabs {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 3rem;
+      opacity: 0;
+      animation: hlFadeUp 0.7s ease forwards 0.7s;
+    }
+
+    .hl-tab {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(255,248,235,0.04);
+      border: 1px solid rgba(201,149,110,0.2);
+      border-radius: 2px;
+      padding: 0.6rem 1.3rem;
+      font-family: 'Jost', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 300;
+      letter-spacing: 0.1em;
+      color: rgba(200,184,154,0.5);
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.22,1,0.36,1);
+      position: relative;
+      overflow: hidden;
+      user-select: none;
+    }
+
+    .hl-tab::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(201,149,110,0.12), rgba(201,149,110,0.06));
+      transform: translateX(-105%);
+      transition: transform 0.4s cubic-bezier(0.22,1,0.36,1);
+    }
+
+    .hl-tab:hover { border-color: rgba(201,149,110,0.45); color: #c8b89a; }
+    .hl-tab:hover::before { transform: translateX(0); }
+
+    .hl-tab.active {
+      border-color: var(--gold);
+      color: var(--gold-light);
+      background: rgba(201,149,110,0.1);
+    }
+    .hl-tab.active::before { transform: translateX(0); }
+
+    .hl-tab-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: currentColor;
+      opacity: 0.6;
+      flex-shrink: 0;
+    }
+
+    .hl-tab.active .hl-tab-dot {
+      background: var(--gold);
+      opacity: 1;
+      box-shadow: 0 0 6px rgba(201,149,110,0.6);
+      animation: tabDotPulse 2s ease-in-out infinite;
+    }
+
+    @keyframes tabDotPulse {
+      0%, 100% { box-shadow: 0 0 4px rgba(201,149,110,0.4); }
+      50%       { box-shadow: 0 0 10px rgba(201,149,110,0.8); }
+    }
+
+    /* ── Tab panels ── */
+    .hl-panel { display: none; }
+    .hl-panel.active {
+      display: block;
+      animation: panelReveal 0.5s cubic-bezier(0.22,1,0.36,1) forwards;
+    }
+
+    @keyframes panelReveal {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Video grid ── */
+    .hl-grid {
+      display: grid;
+      gap: 1.2rem;
+    }
+
+    .hl-grid.layout-1 { grid-template-columns: 1fr; max-width: 700px; margin: 0 auto; }
+    .hl-grid.layout-2 { grid-template-columns: repeat(2, 1fr); }
+    .hl-grid.layout-3 { grid-template-columns: repeat(3, 1fr); }
+
+    /* First item in 3-col spans full width as hero */
+    .hl-grid.layout-3 .hl-video-card:first-child {
+      grid-column: 1 / -1;
+    }
+
+    /* ── Video Card ── */
+    .hl-video-card {
+      position: relative;
+      border: 1px solid rgba(201,149,110,0.18);
+      border-radius: 3px;
+      overflow: hidden;
+      background: rgba(255,248,235,0.03);
+      cursor: pointer;
+      transition: transform 0.4s cubic-bezier(0.22,1,0.36,1), border-color 0.3s ease, box-shadow 0.4s ease;
+      opacity: 0;
+      transform: translateY(24px);
+    }
+
+    .hl-video-card.visible {
+      opacity: 1;
+      transform: translateY(0);
+      transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.22,1,0.36,1),
+                  border-color 0.3s ease, box-shadow 0.4s ease;
+    }
+
+    .hl-video-card:hover {
+      border-color: rgba(201,149,110,0.5);
+      box-shadow: 0 8px 40px rgba(0,0,0,0.5), 0 0 30px rgba(201,149,110,0.1);
+      transform: translateY(-4px) scale(1.01);
+    }
+
+    /* Top shine line on hover */
+    .hl-video-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--gold) 30%, var(--gold-light) 50%, var(--gold) 70%, transparent);
+      transform: scaleX(0);
+      transition: transform 0.4s ease;
+      z-index: 3;
+    }
+
+    .hl-video-card:hover::before { transform: scaleX(1); }
+
+    /* Video wrapper — 16:9 */
+    .hl-video-wrap {
+      position: relative;
+      width: 100%;
+      padding-top: 56.25%;
+      background: #0a0400;
+      overflow: hidden;
+    }
+
+    /* Portrait ratio for reels */
+    .hl-video-card.portrait .hl-video-wrap {
+      padding-top: 177.78%; /* 9:16 */
+    }
+
+    .hl-video-wrap video {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* Overlay */
+    .hl-video-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        to bottom,
+        rgba(0,0,0,0.1) 0%,
+        rgba(0,0,0,0) 30%,
+        rgba(0,0,0,0) 50%,
+        rgba(18,6,0,0.7) 100%
+      );
+      z-index: 1;
+      transition: background 0.3s ease;
+    }
+
+    .hl-video-card:hover .hl-video-overlay {
+      background: linear-gradient(
+        to bottom,
+        rgba(0,0,0,0.05) 0%,
+        rgba(0,0,0,0) 40%,
+        rgba(0,0,0,0) 50%,
+        rgba(18,6,0,0.5) 100%
+      );
+    }
+
+    /* Play button */
+    .hl-play-btn {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 56px; height: 56px;
+      border-radius: 50%;
+      background: rgba(201,149,110,0.15);
+      border: 1.5px solid rgba(201,149,110,0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2;
+      transition: all 0.3s cubic-bezier(0.22,1,0.36,1);
+      backdrop-filter: blur(4px);
+    }
+
+    .hl-play-btn::before {
+      content: '';
+      position: absolute;
+      inset: -6px;
+      border-radius: 50%;
+      border: 1px solid rgba(201,149,110,0.2);
+      animation: playRingPulse 2s ease-in-out infinite;
+    }
+
+    @keyframes playRingPulse {
+      0%, 100% { transform: scale(1); opacity: 0.5; }
+      50%       { transform: scale(1.15); opacity: 0.2; }
+    }
+
+    .hl-play-btn svg {
+      margin-left: 3px;
+      transition: transform 0.3s ease;
+    }
+
+    .hl-video-card:hover .hl-play-btn {
+      background: rgba(201,149,110,0.3);
+      border-color: var(--gold);
+      transform: translate(-50%, -50%) scale(1.1);
+      box-shadow: 0 0 30px rgba(201,149,110,0.3);
+    }
+
+    .hl-video-card:hover .hl-play-btn svg { transform: scale(1.1); }
+
+    /* Hide play button when playing */
+    .hl-video-card.playing .hl-play-btn { opacity: 0; pointer-events: none; }
+    .hl-video-card.playing .hl-video-overlay { opacity: 0; }
+
+    /* Card footer */
+    .hl-video-info {
+      padding: 1rem 1.2rem 1.1rem;
+      position: relative;
+      background: rgba(10,4,0,0.6);
+    }
+
+    .hl-video-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.05rem;
+      font-weight: 400;
+      color: #f5e6c8;
+      margin-bottom: 0.25rem;
+      letter-spacing: 0.02em;
+    }
+
+    .hl-video-meta {
+      font-family: 'Jost', sans-serif;
+      font-size: 0.7rem;
+      font-weight: 300;
+      letter-spacing: 0.1em;
+      color: rgba(201,149,110,0.6);
+      text-transform: uppercase;
+    }
+
+    /* Duration badge */
+    .hl-duration {
+      position: absolute;
+      bottom: 0.5rem; right: 0.8rem;
+      font-family: 'Jost', sans-serif;
+      font-size: 0.65rem;
+      font-weight: 400;
+      color: rgba(245,215,142,0.7);
+      letter-spacing: 0.08em;
+    }
+
+    /* Empty state */
+    .hl-empty {
+      text-align: center;
+      padding: 5rem 2rem;
+      border: 1px dashed rgba(201,149,110,0.2);
+      border-radius: 3px;
+    }
+
+    .hl-empty-icon {
+      width: 60px; height: 60px;
+      border: 1px solid rgba(201,149,110,0.3);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 1.2rem;
+    }
+
+    .hl-empty-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.4rem;
+      font-style: italic;
+      font-weight: 300;
+      color: rgba(200,184,154,0.4);
+      margin-bottom: 0.5rem;
+    }
+
+    .hl-empty-sub {
+      font-family: 'Jost', sans-serif;
+      font-size: 0.78rem;
+      font-weight: 300;
+      color: rgba(200,184,154,0.25);
+      letter-spacing: 0.05em;
+    }
+
+    /* Lightbox */
+    .hl-lightbox {
+      position: fixed;
+      inset: 0;
+      background: rgba(10,4,0,0.96);
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.35s ease;
+      backdrop-filter: blur(12px);
+    }
+
+    .hl-lightbox.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .hl-lightbox-inner {
+      width: min(90vw, 900px);
+      position: relative;
+      transform: scale(0.92);
+      transition: transform 0.4s cubic-bezier(0.22,1,0.36,1);
+    }
+
+    .hl-lightbox.open .hl-lightbox-inner { transform: scale(1); }
+
+    .hl-lightbox-video-wrap {
+      width: 100%;
+      padding-top: 56.25%;
+      position: relative;
+      border: 1px solid rgba(201,149,110,0.3);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .hl-lightbox-video-wrap.portrait {
+      width: min(50vw, 400px);
+      padding-top: 0;
+      height: min(80vh, 711px);
+      margin: 0 auto;
+    }
+
+    .hl-lightbox-video-wrap video {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .hl-lightbox-video-wrap.portrait video { position: static; width: 100%; height: 100%; }
+
+    .hl-lightbox-close {
+      position: absolute;
+      top: -44px; right: 0;
+      width: 36px; height: 36px;
+      border: 1px solid rgba(201,149,110,0.4);
+      border-radius: 50%;
+      background: rgba(10,4,0,0.8);
+      color: var(--gold);
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.2s ease;
+    }
+
+    .hl-lightbox-close:hover {
+      background: rgba(201,149,110,0.2);
+      border-color: var(--gold);
+    }
+
+    .hl-lightbox-title {
+      text-align: center;
+      margin-top: 1rem;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.1rem;
+      font-style: italic;
+      font-weight: 300;
+      color: rgba(200,184,154,0.6);
+    }
+
+    /* Animations */
+    @keyframes hlFadeUp {
+      from { opacity: 0; transform: translateY(14px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 640px) {
+      .hl-grid.layout-2,
+      .hl-grid.layout-3 { grid-template-columns: 1fr; }
+      .hl-grid.layout-3 .hl-video-card:first-child { grid-column: auto; }
+      .hl-lightbox-video-wrap.portrait { width: 90vw; height: auto; padding-top: 177.78%; }
+      .hl-lightbox-video-wrap.portrait video { position: absolute; }
+    }
+  </style>
+  <script>// Auto-load first frame as thumbnail
+    function grabFirstFrame(video) {
+      if (video.readyState >= 1) {
+        video.currentTime = 0.1;
+      } else {
+        video.addEventListener('loadedmetadata', () => {
+          video.currentTime = 0.1;
+        }, { once: true });
+      }
+    }
+
+    // Run on all currently rendered videos
+    document.querySelectorAll('.hl-video-wrap video').forEach(grabFirstFrame);
+
+    // Also run whenever a new tab panel is activated (new cards rendered)
+    const originalActivate = activateTab;
+    // Patch tab switching to also grab frames on newly rendered cards
+    document.querySelectorAll('.hl-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        setTimeout(() => {
+          document.querySelectorAll('.hl-panel.active .hl-video-wrap video').forEach(grabFirstFrame);
+        }, 100);
+      });
+    });
+</script>
+</head>
+
+<body>
+<a href="index.html" class="hl-back-btn">
+  <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+    <path d="M9 2 L3 7 L9 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
+  Back to Our Story
+</a>
+<section id="highlights">
+
+  <div class="hl-particles" id="hlParticles"></div>
+
+  <div class="hl-inner">
+
+    <!-- Header -->
+    <div class="hl-header">
+      <div class="hl-label">Relive Every Moment</div>
+      <div class="hl-title">Wedding Highlights</div>
+      <div class="hl-ornament">
+        <div class="hl-orn-line"></div>
+        <div class="hl-orn-gem"></div>
+        <div class="hl-orn-line r"></div>
+      </div>
+      <div class="hl-subtitle">Every laugh, every tear, every stolen glance — captured forever</div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="hl-tabs" id="hlTabs">
+      <!-- <div class="hl-tab active" data-tab="all">
+        <span class="hl-tab-dot"></span> All
+      </div> -->
+      <div class="hl-tab" data-tab="Pre-wedding reels">
+        <span class="hl-tab-dot"></span> Pre-wedding reels
+      </div>
+      <!-- <div class="hl-tab" data-tab="sangeet">
+        <span class="hl-tab-dot"></span> Sangeet
+      </div>
+      <div class="hl-tab" data-tab="engagement">
+        <span class="hl-tab-dot"></span> Engagement
+      </div>
+      <div class="hl-tab" data-tab="reception">
+        <span class="hl-tab-dot"></span> Reception
+      </div> -->
+    </div>
+
+    <!-- Panels -->
+    <div id="hlPanels"></div>
+
+  </div>
+</section>
+
+<!-- Lightbox -->
+<div class="hl-lightbox" id="hlLightbox">
+  <div class="hl-lightbox-inner">
+    <button class="hl-lightbox-close" id="hlLightboxClose">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+        <line x1="1" y1="1" x2="13" y2="13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        <line x1="13" y1="1" x2="1" y2="13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+    </button>
+    <div id="hlLightboxContent"></div>
+    <div class="hl-lightbox-title" id="hlLightboxTitle"></div>
+  </div>
+</div>
+
+
+<script>
+  // ═══════════════════════════════════════════════════
+  //  VIDEO CONFIGURATION
+  //  Add your videos here. Place files in /videos/ folder.
+  //  orientation: 'landscape' (default) or 'portrait' (for reels/vertical)
+  // ═══════════════════════════════════════════════════
+  const VIDEOS = [
+    {
+      tab: 'Pre-wedding reels',
+      src: 'videos/reel1.mp4',
+      title: 'Just Us in Motion',
+      meta: 'This Is What Love Looks Like',
+      duration: '',           // e.g. '2:34' — leave empty to hide
+      orientation: 'landscape'
+    },
+    {
+      tab: 'Pre-wedding reels',
+      src: 'videos/reel2.mp4',
+      title: 'Draped in Tradition, Framed in Love',
+      meta: 'Where Royalty Meets Us ',
+      duration: '',
+      orientation: 'landscape' // vertical reel
+    },
+    // {
+    //   tab: 'sangeet',
+    //   src: 'videos/sangeet-highlights.mp4',
+    //   title: 'A Night of Music',
+    //   meta: 'Sangeet · 18 April 2026',
+    //   duration: '',
+    //   orientation: 'landscape'
+    // },
+    // {
+    //   tab: 'sangeet',
+    //   src: 'videos/sangeet-reel.mp4',
+    //   title: 'Dance Floor Diaries',
+    //   meta: 'Sangeet Reel · 18 April 2026',
+    //   duration: '',
+    //   orientation: 'portrait'
+    // },
+    // {
+    //   tab: 'engagement',
+    //   src: 'videos/engagement-highlights.mp4',
+    //   title: 'The Ring Moment',
+    //   meta: 'Engagement · 19 April 2026',
+    //   duration: '',
+    //   orientation: 'landscape'
+    // },
+    // {
+    //   tab: 'reception',
+    //   src: 'videos/reception-highlights.mp4',
+    //   title: 'An Evening to Remember',
+    //   meta: 'Reception · 19 April 2026',
+    //   duration: '',
+    //   orientation: 'landscape'
+    // },
+    // {
+    //   tab: 'reception',
+    //   src: 'videos/reception-reel.mp4',
+    //   title: 'Reception Reel',
+    //   meta: 'Reception · 19 April 2026',
+    //   duration: '',
+    //   orientation: 'portrait'
+    // },
+  ];
+
+  // ═══════════════════════════════════════════════════
+
+  const tabs   = ['all', 'Pre-wedding reels'];
+  const panels = document.getElementById('hlPanels');
+
+  function getVideosForTab(tab) {
+    return tab === 'all' ? VIDEOS : VIDEOS.filter(v => v.tab === tab);
+  }
+
+  function getLayout(count) {
+    if (count === 1) return 'layout-1';
+    if (count === 2) return 'layout-2';
+    return 'layout-3';
+  }
+
+  function buildCard(video, index) {
+    const isPortrait = video.orientation === 'portrait';
+    const card = document.createElement('div');
+    card.className = `hl-video-card${isPortrait ? ' portrait' : ''}`;
+    card.style.transitionDelay = `${index * 0.1}s`;
+    card.innerHTML = `
+      <div class="hl-video-wrap">
+        <video src="${video.src}" preload="metadata" playsinline muted loop></video>
+        <div class="hl-video-overlay"></div>
+        <div class="hl-play-btn">
+          <svg width="16" height="18" viewBox="0 0 16 18" fill="none">
+            <path d="M2 1.5 L14.5 9 L2 16.5 Z" fill="#C9956E"/>
+          </svg>
+        </div>
+      </div>
+      <div class="hl-video-info">
+        <div class="hl-video-title">${video.title}</div>
+        <div class="hl-video-meta">${video.meta}</div>
+        ${video.duration ? `<div class="hl-duration">${video.duration}</div>` : ''}
+      </div>
+    `;
+
+    // Click → open lightbox
+    card.addEventListener('click', () => openLightbox(video));
+
+    // Hover preview
+    const vid = card.querySelector('video');
+    card.addEventListener('mouseenter', () => { vid.play().catch(()=>{}); });
+    card.addEventListener('mouseleave', () => { vid.pause(); vid.currentTime = 0; });
+
+    return card;
+  }
+
+  function buildPanel(tab) {
+    const videos = getVideosForTab(tab);
+    const panel = document.createElement('div');
+    panel.className = 'hl-panel';
+    panel.dataset.tab = tab;
+
+    if (videos.length === 0) {
+      panel.innerHTML = `
+        <div class="hl-empty">
+          <div class="hl-empty-icon">
+            <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+              <path d="M4 4 L18 11 L4 18 Z" stroke="#C9956E" stroke-width="1.2" fill="none"/>
+            </svg>
+          </div>
+          <div class="hl-empty-title">Coming Soon</div>
+          <div class="hl-empty-sub">Videos will appear here after the celebrations</div>
+        </div>`;
+      return panel;
+    }
+
+    const grid = document.createElement('div');
+    grid.className = `hl-grid ${getLayout(videos.length)}`;
+    videos.forEach((v, i) => grid.appendChild(buildCard(v, i)));
+    panel.appendChild(grid);
+    return panel;
+  }
+
+  // Build all panels
+  tabs.forEach(tab => panels.appendChild(buildPanel(tab)));
+
+  // Activate first panel
+  function activateTab(tab) {
+    document.querySelectorAll('.hl-tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
+    document.querySelectorAll('.hl-panel').forEach(p => {
+      p.classList.toggle('active', p.dataset.tab === tab);
+    });
+
+    // Trigger reveal animations
+    setTimeout(() => {
+      document.querySelectorAll('.hl-panel.active .hl-video-card').forEach((c, i) => {
+        setTimeout(() => c.classList.add('visible'), i * 100);
+      });
+    }, 50);
+  }
+
+  activateTab('all');
+
+  document.querySelectorAll('.hl-tab').forEach(tab => {
+    tab.addEventListener('click', () => activateTab(tab.dataset.tab));
+  });
+
+  // ── Lightbox ──
+  const lightbox      = document.getElementById('hlLightbox');
+  const lbContent     = document.getElementById('hlLightboxContent');
+  const lbTitle       = document.getElementById('hlLightboxTitle');
+  const lbClose       = document.getElementById('hlLightboxClose');
+  let   lbVideo       = null;
+
+  function openLightbox(video) {
+    const isPortrait = video.orientation === 'portrait';
+    lbContent.innerHTML = `
+      <div class="hl-lightbox-video-wrap${isPortrait ? ' portrait' : ''}">
+        <video src="${video.src}" controls autoplay playsinline style="display:block;"></video>
+      </div>`;
+    lbTitle.textContent = video.title;
+    lbVideo = lbContent.querySelector('video');
+    lightbox.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeLightbox() {
+    lightbox.classList.remove('open');
+    document.body.style.overflow = '';
+    if (lbVideo) { lbVideo.pause(); lbVideo = null; }
+    setTimeout(() => { lbContent.innerHTML = ''; }, 400);
+  }
+
+  lbClose.addEventListener('click', closeLightbox);
+  lightbox.addEventListener('click', e => { if (e.target === lightbox) closeLightbox(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+
+  // ── Particles ──
+  const pc = document.getElementById('hlParticles');
+  for (let i = 0; i < 24; i++) {
+    const p = document.createElement('div');
+    p.className = 'hl-particle';
+    p.style.cssText = `left:${Math.random()*100}%;top:${Math.random()*100}%;
+      animation-duration:${4+Math.random()*6}s;animation-delay:${Math.random()*6}s;`;
+    pc.appendChild(p);
+  }
+
+  // ── Scroll reveal ──
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.querySelectorAll('.hl-video-card').forEach((c,i) => {
+          setTimeout(() => c.classList.add('visible'), i * 100);
+        });
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.hl-panel').forEach(p => io.observe(p));
+</script>
+
+</body>
+</html>

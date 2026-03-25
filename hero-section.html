@@ -339,21 +339,23 @@
     /* floating name tag on image */
     .img-tag {
       position: absolute;
+      top:50px;
       bottom: 60px;
-      right: 48px;
+      right: -200px;
+      width:100%;
       z-index: 8;
-      text-align: right;
       opacity: 0;
       transform: translateY(20px);
       animation: slideUp 0.9s 1.8s ease forwards;
     }
     .img-tag-date {
       font-family: 'Montserrat', sans-serif;
-      font-size: 9px;
+      font-size: 12px;
       letter-spacing: 4px;
       text-transform: uppercase;
       color: rgba(255,255,255,0.75);
       margin-bottom: 4px;
+      padding: 0 30px;
       text-shadow: 0 1px 8px rgba(0,0,0,0.4);
     }
     .img-tag-name {
@@ -412,7 +414,7 @@
       .hero-content { padding: 80px 20px 36px; }
       .hero-image-side { height: 70vw; }
       .btn-primary { padding:12px 26px; }
-      .img-tag { bottom:24px; right:20px; }
+      .img-tag { bottom:24px; top:30px; left:10px }
       .img-heart-badge { top:24px; right:20px; width:44px; height:44px; font-size:18px; }
     }
   </style>
@@ -495,6 +497,7 @@
     </div>
 
     <div class="btn-group">
+      <a href="highlights.html" class="btn-primary" target="_parent">Wedding Highlights</a>
       <a href="index.html#countdown" class="btn-primary" target="_parent">Celebrate With Us</a>
       <a href="index.html#events" class="btn-primary" target="_parent">Functions & Timings</a>
       <a href="index.html#rsvp" class="btn-primary" target="_parent">RSVP Now</a>
@@ -525,11 +528,11 @@
     <div class="img-heart-badge">❤️</div>
   </div>
 
-  <!-- Scroll hint -->
+  <!-- Scroll hint
   <div class="scroll-hint">
     <span>Scroll</span>
     <div class="scroll-arrow"></div>
-  </div>
+  </div> -->
 
 </section>
 
