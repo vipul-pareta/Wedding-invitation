@@ -2231,51 +2231,6 @@
 
 </style>
 </head>
-<script>
-  // 1. Disable right click
-  document.addEventListener('contextmenu', e => e.preventDefault());
-
-  // 2. Disable Ctrl+U, Ctrl+S, Ctrl+Shift+I, Ctrl+Shift+J, F12
-  document.addEventListener('keydown', e => {
-    if (
-      e.key === 'F12' ||
-      (e.ctrlKey && e.key === 'u') ||
-      (e.ctrlKey && e.key === 's') ||
-      (e.ctrlKey && e.shiftKey && e.key === 'I') ||
-      (e.ctrlKey && e.shiftKey && e.key === 'J') ||
-      (e.ctrlKey && e.shiftKey && e.key === 'C') ||
-      (e.metaKey && e.key === 'u') // Mac Cmd+U
-    ) {
-      e.preventDefault();
-      return false;
-    }
-  });
-
-  // 3. Detect if DevTools is open and blur the page
-  (function detectDevTools() {
-    const threshold = 160;
-    const check = () => {
-      if (
-        window.outerWidth - window.innerWidth > threshold ||
-        window.outerHeight - window.innerHeight > threshold
-      ) {
-        document.body.style.filter = 'blur(8px)';
-        document.body.style.pointerEvents = 'none';
-      } else {
-        document.body.style.filter = '';
-        document.body.style.pointerEvents = '';
-      }
-    };
-    window.addEventListener('resize', check);
-    setInterval(check, 1000);
-  })();
-
-  // 4. Disable drag on images
-  document.querySelectorAll('img').forEach(img => {
-    img.setAttribute('draggable', false);
-    img.addEventListener('dragstart', e => e.preventDefault());
-  });
-</script>
 <body>
 <!-- ════════════════════════════════════════ -->
 <!--          GANESH OPENING SECTION          -->
