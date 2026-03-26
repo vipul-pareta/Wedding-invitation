@@ -549,31 +549,6 @@
       .hl-lightbox-video-wrap.portrait video { position: absolute; }
     }
   </style>
-  <script>// Auto-load first frame as thumbnail
-    function grabFirstFrame(video) {
-      if (video.readyState >= 1) {
-        video.currentTime = 0.1;
-      } else {
-        video.addEventListener('loadedmetadata', () => {
-          video.currentTime = 0.1;
-        }, { once: true });
-      }
-    }
-
-    // Run on all currently rendered videos
-    document.querySelectorAll('.hl-video-wrap video').forEach(grabFirstFrame);
-
-    // Also run whenever a new tab panel is activated (new cards rendered)
-    const originalActivate = activateTab;
-    // Patch tab switching to also grab frames on newly rendered cards
-    document.querySelectorAll('.hl-tab').forEach(tab => {
-      tab.addEventListener('click', () => {
-        setTimeout(() => {
-          document.querySelectorAll('.hl-panel.active .hl-video-wrap video').forEach(grabFirstFrame);
-        }, 100);
-      });
-    });
-</script>
 </head>
 
 <body>
@@ -653,6 +628,7 @@
       src: 'videos/reel1.mp4',
       title: 'Just Us in Motion',
       meta: 'This Is What Love Looks Like',
+      poster: 'images/thumbs/reel1-thumb.jpg',
       duration: '',           // e.g. '2:34' — leave empty to hide
       orientation: 'landscape'
     },
@@ -661,6 +637,7 @@
       src: 'videos/reel2.mp4',
       title: 'Draped in Tradition, Framed in Love',
       meta: 'Where Royalty Meets Us ',
+      poster: 'images/thumbs/reel2-thumb.jpg',
       duration: '',
       orientation: 'landscape' // vertical reel
     },
@@ -728,7 +705,7 @@
     card.style.transitionDelay = `${index * 0.1}s`;
     card.innerHTML = `
       <div class="hl-video-wrap">
-        <video src="${video.src}" preload="metadata" playsinline muted loop></video>
+        <video src="${video.src}" poster="${video.poster || ''}" preload="none" playsinline muted loop></video>
         <div class="hl-video-overlay"></div>
         <div class="hl-play-btn">
           <svg width="16" height="18" viewBox="0 0 16 18" fill="none">
@@ -749,7 +726,7 @@
     // Hover preview
     const vid = card.querySelector('video');
     card.addEventListener('mouseenter', () => { vid.play().catch(()=>{}); });
-    card.addEventListener('mouseleave', () => { vid.pause(); vid.currentTime = 0; });
+    card.addEventListener('mouseleave', () => { vid.pause(); vid.load(); });
 
     return card;
   }
