@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <rect width="64" height="64" rx="12" fill="#1a0800"/>
+  <rect x="2" y="2" width="60" height="60" rx="10" fill="none" stroke="#C9956E" stroke-width="0.8" opacity="0.4"/>
+  <!-- Flame -->
+  <path d="M32 14 C30 18 27 21 27 25 C27 29 29.5 31 32 31 C34.5 31 37 29 37 25 C37 21 34 18 32 14Z" fill="#C9956E" opacity="0.95"/>
+  <path d="M32 18 C31 20 30 22 30 25 C30 27 31 28.5 32 28.5" fill="#F5D78E" opacity="0.6"/>
+  <!-- Diya bowl -->
+  <path d="M20 38 Q20 44 32 44 Q44 44 44 38 Q40 34 32 34 Q24 34 20 38Z" fill="#C9956E" opacity="0.85"/>
+  <path d="M20 38 Q32 36 44 38" fill="none" stroke="#F5D78E" stroke-width="0.8" opacity="0.4"/>
+  <!-- Wick -->
+  <line x1="32" y1="31" x2="32" y2="34" stroke="#C9956E" stroke-width="1.5" stroke-linecap="round"/>
+  <!-- Base -->
+  <path d="M24 44 Q32 47 40 44" fill="none" stroke="#C9956E" stroke-width="1.2" stroke-linecap="round" opacity="0.5"/>
+  <!-- Glow -->
+  <circle cx="32" cy="25" r="8" fill="#C9956E" opacity="0.06"/>
+</svg>
