@@ -488,14 +488,14 @@
         <label class="field-label">Aap aa rahe ho na?</label>
         <div class="attendance-row">
           <div>
-            <input class="attendance-option" type="radio" name="attendance" id="attYes" value="yes" checked/>
+            <input class="attendance-option" type="radio" name="attendance" id="attYes" value="Haan ji, zaroor aa rahe hain!" checked/>
             <label class="attendance-label" for="attYes">
               <span class="attendance-dot"></span>
               Haan ji, zaroor aa rahe hain!
             </label>
           </div>
           <div>
-            <input class="attendance-option" type="radio" name="attendance" id="attNo" value="no"/>
+            <input class="attendance-option" type="radio" name="attendance" id="attNo" value="Aana hi hai 😄"/>
             <label class="attendance-label" for="attNo">
               <span class="attendance-dot"></span>
               Aana hi hai 😄
@@ -581,16 +581,16 @@
 
   const form = document.getElementById('rsvpForm');
   const success = document.getElementById('rsvpSuccess');
-  const eventsField = document.getElementById('eventsField');
+  //const eventsField = document.getElementById('eventsField');
   const submitBtn = document.querySelector('.rsvp-submit');
 
   // Hide events when declining
-  document.querySelectorAll('input[name="attendance"]').forEach(r => {
-    r.addEventListener('change', () => {
-      eventsField.style.opacity = r.value === 'no' ? '0.35' : '1';
-      eventsField.style.pointerEvents = r.value === 'no' ? 'none' : 'auto';
-    });
-  });
+  // document.querySelectorAll('input[name="attendance"]').forEach(r => {
+  //   r.addEventListener('change', () => {
+  //     eventsField.style.opacity = r.value === 'no' ? '0.35' : '1';
+  //     eventsField.style.pointerEvents = r.value === 'no' ? 'none' : 'auto';
+  //   });
+  // });
 
   form.addEventListener('submit', async function(e) {
     e.preventDefault();
@@ -606,10 +606,10 @@
     // Collect data
     const data = {
       name,
-      phone: document.getElementById('phone').value.trim(),
-      guests: document.getElementById('guests').value,
+      // phone: document.getElementById('phone').value.trim(),
+      // guests: document.getElementById('guests').value,
       attendance: document.querySelector('input[name="attendance"]:checked').value,
-      events: [...document.querySelectorAll('.event-check-input:checked')].map(c => c.value),
+      // events: [...document.querySelectorAll('.event-check-input:checked')].map(c => c.value),
       message: document.getElementById('message').value.trim(),
       submittedAt: new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })
     };
